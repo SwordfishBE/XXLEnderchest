@@ -1,6 +1,6 @@
 # XXL Enderchest
 
-A Fabric mod for **Minecraft Java Edition** that expands your enderchest from the vanilla 3 rows (27 slots) to up to 6 rows (54 slots) — giving you up to 2× the storage without any extra blocks.
+A Fabric mod for **Minecraft Java Edition** that expands your enderchest from the vanilla 3 rows (27 slots) to up to 6 rows (54 slots) — giving you up to 2× the storage.
 
 ---
 
