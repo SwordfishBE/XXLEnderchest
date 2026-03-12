@@ -71,7 +71,7 @@ When you reduce `rows` (e.g. from 6 to 4), items stored in the now-hidden rows *
 If you remove XXL Enderchest from an existing world, Minecraft will only load the first 27 slots of each player's ender chest. Items stored in slots 28–54 **will not be loaded** by vanilla Minecraft and may be lost. **Always back up your world before removing this mod.**
 
 ### Multiplayer / servers
-The mod must be installed **server-side**. The config only needs to be on the server. Players do not need to install the mod on their client. Also works in single player worlds.
+The mod must be installed **server-side**. The config only needs to be on the server. Players do not need to install the mod on their client.
 
 ---
 
