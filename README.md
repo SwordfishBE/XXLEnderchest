@@ -1,6 +1,6 @@
 # XXL Enderchest
 
-A Fabric mod for **Minecraft Java Edition 1.21.11** that expands your ender chest from the vanilla 3 rows (27 slots) to up to 6 rows (54 slots) — giving you up to 2× the storage without any extra blocks.
+A Fabric mod for **Minecraft Java Edition** that expands your ender chest from the vanilla 3 rows (27 slots) to up to 6 rows (54 slots) — giving you up to 2× the storage without any extra blocks.
 
 ---
 
@@ -22,7 +22,7 @@ A Fabric mod for **Minecraft Java Edition 1.21.11** that expands your ender ches
 
 ## Installation
 
-1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft 1.21.11
+1. Install [Fabric Loader](https://fabricmc.net/use/installer/).
 2. Download [Fabric API](https://modrinth.com/mod/fabric-api) and place it in your `mods/` folder
 3. Place `xxlenderchest-<version>.jar` in your `mods/` folder
 4. Start the game — a default config is created automatically at `config/xxlenderchest.json`
@@ -71,7 +71,7 @@ When you reduce `rows` (e.g. from 6 to 4), items stored in the now-hidden rows *
 If you remove XXL Enderchest from an existing world, Minecraft will only load the first 27 slots of each player's ender chest. Items stored in slots 28–54 **will not be loaded** by vanilla Minecraft and may be lost. **Always back up your world before removing this mod.**
 
 ### Multiplayer / servers
-The mod must be installed **server-side**. The config only needs to be on the server. Players do not need to install the mod on their client.
+The mod must be installed **server-side**. The config only needs to be on the server. Players do not need to install the mod on their client. Also works in single player worlds.
 
 ---
 
@@ -89,12 +89,6 @@ cd xxlenderchest
 # On Windows:
 gradlew.bat build
 ```
-
-The built JAR will be in `build/libs/xxlenderchest-<version>.jar`.
-
-> **First-time setup:** If the `gradlew` / `gradlew.bat` scripts are missing, run `gradle wrapper` with a locally installed Gradle first, or download them from the [Fabric mod template](https://github.com/FabricMC/fabric-example-mod).
-
----
 
 ## Technical details
 
