@@ -10,7 +10,8 @@
   "contact": {
     "homepage": "https://github.com/SwordfishBE/XXLEnderchest",
     "sources": "https://github.com/SwordfishBE/XXLEnderchest",
-    "issues": "https://github.com/SwordfishBE/XXLEnderchest/issues"
+    "issues": "https://github.com/SwordfishBE/XXLEnderchest/issues",
+    "email": "swordfishbe@locutus.net"
   },
   "license": "AGPL-3.0",
   "icon": "assets/xxlenderchest/icon.png",
