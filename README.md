@@ -27,6 +27,8 @@ A Fabric mod for **Minecraft Java Edition** that expands your enderchest from th
 3. Place `xxlenderchest-<version>.jar` in your `mods/` folder
 4. Start the game — a default config is created automatically at `config/xxlenderchest.json`
 
+This mod is also available on [Modrinth](https://modrinth.com/mod/xxlenderchest) or [CurseForge](https://www.curseforge.com/minecraft/mc-mods/xxl-enderchest).
+
 ---
 
 ## Configuration
