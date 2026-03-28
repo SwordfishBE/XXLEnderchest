@@ -3,6 +3,7 @@ package net.xxlenderchest;
 import net.xxlenderchest.command.XXLCommand;
 import net.xxlenderchest.config.XXLConfig;
 import net.xxlenderchest.config.XXLConfigManager;
+import net.xxlenderchest.permission.PermissionHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import org.slf4j.Logger;
@@ -16,15 +17,16 @@ import org.slf4j.LoggerFactory;
  *
  * <h2>Commands</h2>
  * <ul>
- *   <li>{@code /xxlenderchest info}   – Shows the current mod status and row count.</li>
+ *   <li>{@code /xxlenderchest info}   – Shows the current mod status and permission mode.</li>
  *   <li>{@code /xxlenderchest reload} – Reloads the config file from disk (OP only).</li>
  * </ul>
  *
  * <h2>Config options</h2>
  * <pre>
  * {
- *   "enabled": true,   // false = vanilla ender chest behavior (3 rows)
- *   "rows": 6          // number of rows: 3, 4, 5, or 6
+ *   "enabled": true,       // false = vanilla ender chest behavior (3 rows)
+ *   "useLuckPerms": false, // true = use permission nodes for 4/5/6 rows
+ *   "rows": 6              // fallback row count when LuckPerms is not used
  * }
  * </pre>
  *
@@ -64,6 +66,7 @@ public class XXLEnderChest implements ModInitializer {
      */
     public static void reloadConfig() {
         config = configManager.load();
+        logPermissionMode();
     }
 
     // -------------------------------------------------------------------------
@@ -77,6 +80,7 @@ public class XXLEnderChest implements ModInitializer {
         // Load config on startup
         configManager = new XXLConfigManager();
         config = configManager.load();
+        logPermissionMode();
 
         // Register the /xxlenderchest command
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
@@ -85,5 +89,19 @@ public class XXLEnderChest implements ModInitializer {
 
         LOGGER.info("[XXL Enderchest] Ready! Ender chest rows: {} (enabled: {})",
                 config.getRows(), config.isEnabled());
+    }
+
+    private static void logPermissionMode() {
+        if (config.isUseLuckPerms() && !PermissionHelper.isLuckPermsAvailable()) {
+            LOGGER.warn("[XXL Enderchest] useLuckPerms is true, but LuckPerms is not installed. Falling back to config rows.");
+            return;
+        }
+
+        if (PermissionHelper.isUsingLuckPerms(config)) {
+            LOGGER.info("[XXL Enderchest] LuckPerms row permissions enabled.");
+            return;
+        }
+
+        LOGGER.info("[XXL Enderchest] Config row mode enabled.");
     }
 }

@@ -2,6 +2,7 @@ package net.xxlenderchest.mixin;
 
 import net.xxlenderchest.XXLEnderChest;
 import net.xxlenderchest.config.XXLConfig;
+import net.xxlenderchest.permission.PermissionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -49,8 +50,12 @@ public class EnderChestBlockMixin {
     ) {
         XXLConfig config = XXLEnderChest.getConfig();
 
-        // Only intercept when the mod is active and rows > 3
-        if (!config.isEnabled() || config.getRows() <= 3) {
+        if (!config.isEnabled() || !(player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)) {
+            return;
+        }
+
+        int rows = PermissionHelper.resolveRows(serverPlayer, config);
+        if (rows <= 3) {
             return;
         }
 
@@ -67,7 +72,6 @@ public class EnderChestBlockMixin {
         }
 
         if (level instanceof ServerLevel serverLevel) {
-            int rows = config.getRows();
             MenuType<?> menuType = rowsToMenuType(rows);
 
             // setActiveChest drives the lid animation, same as vanilla

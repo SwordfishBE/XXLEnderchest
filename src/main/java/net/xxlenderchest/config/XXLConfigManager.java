@@ -56,6 +56,7 @@ public class XXLConfigManager {
             }
 
             config.validate();
+            save(config);
             XXLEnderChest.LOGGER.info("[XXL Enderchest] Config loaded: {}", config);
             return config;
 
