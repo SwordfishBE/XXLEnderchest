@@ -25,9 +25,9 @@
     "xxlenderchest.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.18.4",
+    "fabricloader": ">=0.18.5",
     "fabric-api": "*",
-    "minecraft": "~26.1",
+    "minecraft": "~26.1.1",
     "java": ">=25"
   }
 }
