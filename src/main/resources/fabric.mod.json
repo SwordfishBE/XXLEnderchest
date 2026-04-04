@@ -19,6 +19,9 @@
   "entrypoints": {
     "main": [
       "net.xxlenderchest.XXLEnderChest"
+    ],
+    "modmenu": [
+      "net.xxlenderchest.client.XXLEnderChestModMenuIntegration"
     ]
   },
   "mixins": [
@@ -29,5 +32,9 @@
     "fabric-api": "*",
     "minecraft": "~26.1.1",
     "java": ">=25"
+  },
+  "suggests": {
+    "modmenu": "*",
+    "cloth-config": "*"
   }
 }

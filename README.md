@@ -19,6 +19,7 @@ Server-side Fabric mod for Minecraft Java Edition that expands the ender chest b
 - Vanilla access is preserved: every player can always use a normal 3-row ender chest.
 - Fixed config mode for simple servers or single-player worlds.
 - Optional LuckPerms mode for per-group row upgrades.
+- Optional Mod Menu + Cloth Config integration for an in-game config screen on the client.
 - Automatic fallback to config mode if LuckPerms is enabled in config but the mod is not installed.
 - Hidden rows keep their items stored safely; lowering access does not delete inventory contents.
 - Works on dedicated servers and in single-player.
@@ -53,6 +54,8 @@ Config file: `config/xxlenderchest.json`
 | `rows` | integer | Fallback row count from `3` to `6`. Used when LuckPerms mode is off, or when LuckPerms is missing. |
 
 After editing the config, run `/xxlenderchest reload`.
+
+If you install [Mod Menu](https://modrinth.com/mod/modmenu) and [Cloth Config API](https://modrinth.com/mod/cloth-config) on the client, XXL Enderchest exposes a full config screen in-game.
 
 ## 🔄 LuckPerms permissions
 
@@ -110,8 +113,18 @@ Official LuckPerms docs:
 3. Place `xxlenderchest-<version>.jar` in your `mods/` folder.
 4. Start the game or server once to generate `config/xxlenderchest.json`.
 5. Optional: install LuckPerms as well if you want permission-based row upgrades.
+6. Optional for clients: install Mod Menu and Cloth Config API if you want an in-game config screen.
 
 Clients do not need this mod installed when it is used on a server.
+
+### Optional client-side companions
+
+| Mod | Required | Why |
+|-----|----------|-----|
+| Fabric API | Yes | Required dependency for XXL Enderchest |
+| LuckPerms | No | Enables permission-based row upgrades |
+| Mod Menu | No | Adds a config entry for XXL Enderchest in the mods screen |
+| Cloth Config API | No | Powers the actual config GUI used through Mod Menu |
 
 ## ❗ Important notes
 

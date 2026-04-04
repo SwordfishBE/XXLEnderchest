@@ -63,11 +63,32 @@ public class XXLEnderChest implements ModInitializer {
     }
 
     /**
+     * Returns a detached copy of the current config for client-side GUI editing.
+     */
+    public static XXLConfig loadConfigForEditing() {
+        XXLConfig editableConfig = new XXLConfig();
+        editableConfig.setEnabled(config.isEnabled());
+        editableConfig.setUseLuckPerms(config.isUseLuckPerms());
+        editableConfig.setRows(config.getRows());
+        return editableConfig;
+    }
+
+    /**
      * Reloads the config from disk and updates the static reference.
      * Called by {@code /xxlenderchest reload}.
      */
     public static void reloadConfig() {
         config = configManager.load();
+        logPermissionMode();
+    }
+
+    /**
+     * Validates and persists an edited config, then updates the active runtime copy.
+     */
+    public static void applyEditedConfig(XXLConfig editedConfig) {
+        editedConfig.validate();
+        configManager.save(editedConfig);
+        config = editedConfig;
         logPermissionMode();
     }
 
