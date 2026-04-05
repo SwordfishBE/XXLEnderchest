@@ -8,6 +8,7 @@ import net.xxlenderchest.util.ModrinthUpdateChecker;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +47,10 @@ public class XXLEnderChest implements ModInitializer {
 
     /** The mod ID, must match {@code fabric.mod.json}. */
     public static final String MOD_ID = "xxlenderchest";
+    public static final String MOD_NAME = FabricLoader.getInstance()
+            .getModContainer(MOD_ID)
+            .map(container -> container.getMetadata().getName())
+            .orElse("XXL Enderchest");
 
     /** Shared logger instance for all classes in this mod. */
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -98,8 +103,6 @@ public class XXLEnderChest implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        LOGGER.info("[XXL Enderchest] Initializing...");
-
         // Load config on startup
         configManager = new XXLConfigManager();
         config = configManager.load();
@@ -112,21 +115,33 @@ public class XXLEnderChest implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> ModrinthUpdateChecker.checkOnceAsync());
 
-        LOGGER.info("[XXL Enderchest] Ready! Ender chest rows: {} (enabled: {})",
-                config.getRows(), config.isEnabled());
+        LOGGER.info("[{}] Mod initialized. Version: {}", MOD_NAME, getModVersion());
+        LOGGER.debug("[{}] Runtime config after initialization: rows={}, enabled={}",
+                MOD_NAME, config.getRows(), config.isEnabled());
     }
 
     private static void logPermissionMode() {
         if (config.isUseLuckPerms() && !PermissionHelper.isLuckPermsAvailable()) {
-            LOGGER.warn("[XXL Enderchest] useLuckPerms is true, but LuckPerms is not installed. Falling back to config rows.");
+            LOGGER.warn("[{}] useLuckPerms is true, but LuckPerms is not installed. Falling back to config rows.", MOD_NAME);
             return;
         }
 
         if (PermissionHelper.isUsingLuckPerms(config)) {
-            LOGGER.info("[XXL Enderchest] LuckPerms row permissions enabled.");
+            LOGGER.debug("[{}] LuckPerms row permissions enabled.", MOD_NAME);
             return;
         }
 
-        LOGGER.info("[XXL Enderchest] Config row mode enabled.");
+        LOGGER.debug("[{}] Config row mode enabled.", MOD_NAME);
+    }
+
+    public static String getLogPrefix() {
+        return "[" + MOD_NAME + "]";
+    }
+
+    public static String getModVersion() {
+        return FabricLoader.getInstance()
+                .getModContainer(MOD_ID)
+                .map(container -> container.getMetadata().getVersion().getFriendlyString())
+                .orElse("unknown");
     }
 }

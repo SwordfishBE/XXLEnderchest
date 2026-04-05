@@ -43,7 +43,7 @@ public class XXLConfigManager {
      */
     public XXLConfig load() {
         if (!Files.exists(configPath)) {
-            XXLEnderChest.LOGGER.info("[XXL Enderchest] Config not found - creating default config at {}", configPath);
+            XXLEnderChest.LOGGER.debug("{} Config not found - creating default config at {}", XXLEnderChest.getLogPrefix(), configPath);
             XXLConfig defaults = new XXLConfig();
             save(defaults);
             return defaults;
@@ -56,17 +56,17 @@ public class XXLConfigManager {
             XXLConfig config = GSON.fromJson(jsonReader, XXLConfig.class);
 
             if (config == null) {
-                XXLEnderChest.LOGGER.warn("[XXL Enderchest] Config file was empty or invalid - using defaults.");
+                XXLEnderChest.LOGGER.warn("{} Config file was empty or invalid - using defaults.", XXLEnderChest.getLogPrefix());
                 config = new XXLConfig();
             }
 
             config.validate();
             save(config);
-            XXLEnderChest.LOGGER.info("[XXL Enderchest] Config loaded: {}", config);
+            XXLEnderChest.LOGGER.debug("{} Config loaded: {}", XXLEnderChest.getLogPrefix(), config);
             return config;
 
         } catch (IOException e) {
-            XXLEnderChest.LOGGER.error("[XXL Enderchest] Failed to read config file - using defaults.", e);
+            XXLEnderChest.LOGGER.error("{} Failed to read config file - using defaults.", XXLEnderChest.getLogPrefix(), e);
             return new XXLConfig();
         }
     }
@@ -82,9 +82,9 @@ public class XXLConfigManager {
             try (Writer writer = Files.newBufferedWriter(configPath)) {
                 writer.write(buildConfigFileContents(config));
             }
-            XXLEnderChest.LOGGER.info("[XXL Enderchest] Config saved to {}", configPath);
+            XXLEnderChest.LOGGER.debug("{} Config saved to {}", XXLEnderChest.getLogPrefix(), configPath);
         } catch (IOException e) {
-            XXLEnderChest.LOGGER.error("[XXL Enderchest] Failed to save config file.", e);
+            XXLEnderChest.LOGGER.error("{} Failed to save config file.", XXLEnderChest.getLogPrefix(), e);
         }
     }
 

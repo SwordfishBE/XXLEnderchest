@@ -81,7 +81,12 @@ public class XXLCommand {
         ), true);
 
         XXLEnderChest.LOGGER.info(
-                "[XXL Enderchest] Config reloaded by {}. New state: {}",
+                "{} Config reloaded via command.",
+                XXLEnderChest.getLogPrefix()
+        );
+        XXLEnderChest.LOGGER.debug(
+                "{} Config reloaded by {}. New state: {}",
+                XXLEnderChest.getLogPrefix(),
                 ctx.getSource().getTextName(),
                 config
         );
