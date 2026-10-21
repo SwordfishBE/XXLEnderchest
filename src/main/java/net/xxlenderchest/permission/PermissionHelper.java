@@ -56,7 +56,7 @@ public final class PermissionHelper {
             return false;
         }
 
-        if (!isUsingLuckPerms(config)) {
+        if (!config.isUseLuckPerms() || !LUCKPERMS_AVAILABLE) {
             return true;
         }
 

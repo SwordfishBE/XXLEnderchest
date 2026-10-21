@@ -61,7 +61,7 @@ public class XXLEnderChest implements ModInitializer {
     // -------------------------------------------------------------------------
 
     private static XXLConfigManager configManager;
-    private static XXLConfig config;
+    private static volatile XXLConfig config;
 
     /** Returns the currently active configuration. Never {@code null} after mod init. */
     public static XXLConfig getConfig() {
@@ -72,19 +72,14 @@ public class XXLEnderChest implements ModInitializer {
      * Returns a detached copy of the current config for client-side GUI editing.
      */
     public static XXLConfig loadConfigForEditing() {
-        XXLConfig editableConfig = new XXLConfig();
-        editableConfig.setEnabled(config.isEnabled());
-        editableConfig.setUseLuckPerms(config.isUseLuckPerms());
-        editableConfig.setRows(config.getRows());
-        editableConfig.setCommandEnabled(config.isCommandEnabled());
-        return editableConfig;
+        return config.copy();
     }
 
     /**
      * Reloads the config from disk and updates the static reference.
      * Called by {@code /xxlenderchest reload}.
      */
-    public static void reloadConfig() {
+    public static synchronized void reloadConfig() {
         config = configManager.load();
         logPermissionMode();
     }
@@ -92,14 +87,15 @@ public class XXLEnderChest implements ModInitializer {
     /**
      * Validates and persists an edited config, then updates the active runtime copy.
      */
-    public static void applyEditedConfig(XXLConfig editedConfig) {
-        editedConfig.validate();
-        if (!configManager.save(editedConfig)) {
+    public static synchronized void applyEditedConfig(XXLConfig editedConfig) {
+        XXLConfig snapshot = editedConfig.copy();
+        snapshot.validate();
+        if (!configManager.save(snapshot)) {
             LOGGER.error("[{}] Edited config was not applied because saving to disk failed.", MOD_NAME);
             return;
         }
 
-        config = editedConfig;
+        config = snapshot;
         logPermissionMode();
     }
 

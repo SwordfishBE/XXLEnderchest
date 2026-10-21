@@ -39,6 +39,15 @@ public class XXLConfig {
     public void setRows(int rows) { this.rows = rows; }
     public void setCommandEnabled(boolean commandEnabled) { this.commandEnabled = commandEnabled; }
 
+    public XXLConfig copy() {
+        XXLConfig copy = new XXLConfig();
+        copy.enabled = enabled;
+        copy.useLuckPerms = useLuckPerms;
+        copy.rows = rows;
+        copy.commandEnabled = commandEnabled;
+        return copy;
+    }
+
     /** Clamps rows to the allowed range [3, 6]. */
     public void validate() {
         if (rows < 3) rows = 3;

@@ -83,15 +83,17 @@ public final class ModrinthUpdateChecker {
     }
 
     private static Optional<String> extractLatestVersion(String responseBody) {
+        return extractLatestVersion(responseBody, currentMinecraftVersion());
+    }
+
+    static Optional<String> extractLatestVersion(String responseBody, String currentMinecraftVersion) {
         JsonElement root = JsonParser.parseString(responseBody);
         if (!root.isJsonArray()) {
             return Optional.empty();
         }
 
         JsonArray versions = root.getAsJsonArray();
-        String currentMinecraftVersion = currentMinecraftVersion();
         VersionCandidate newestCompatibleRelease = null;
-        VersionCandidate newestRelease = null;
 
         for (JsonElement versionElement : versions) {
             if (!versionElement.isJsonObject()) {
@@ -115,10 +117,6 @@ public final class ModrinthUpdateChecker {
             }
 
             VersionCandidate candidate = new VersionCandidate(versionNumber, publishedAt);
-            if (isNewerCandidate(candidate, newestRelease)) {
-                newestRelease = candidate;
-            }
-
             if (jsonArrayContains(versionObject, "loaders", "fabric")
                     && jsonArrayContains(versionObject, "game_versions", currentMinecraftVersion)
                     && isNewerCandidate(candidate, newestCompatibleRelease)) {
@@ -126,8 +124,8 @@ public final class ModrinthUpdateChecker {
             }
         }
 
-        VersionCandidate selectedCandidate = newestCompatibleRelease != null ? newestCompatibleRelease : newestRelease;
-        return selectedCandidate != null ? Optional.of(selectedCandidate.versionNumber()) : Optional.empty();
+        return newestCompatibleRelease != null
+                ? Optional.of(newestCompatibleRelease.versionNumber()) : Optional.empty();
     }
 
     private static String getString(JsonObject object, String key) {

@@ -12,6 +12,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 /**
  * Manages reading and writing the {@link XXLConfig} JSON file.
@@ -32,9 +33,13 @@ public class XXLConfigManager {
     private final Path configPath;
 
     public XXLConfigManager() {
-        this.configPath = FabricLoader.getInstance()
+        this(FabricLoader.getInstance()
                 .getConfigDir()
-                .resolve(CONFIG_FILE_NAME);
+                .resolve(CONFIG_FILE_NAME));
+    }
+
+    XXLConfigManager(Path configPath) {
+        this.configPath = configPath;
     }
 
     /**
@@ -50,11 +55,12 @@ public class XXLConfigManager {
             return defaults;
         }
 
+        XXLConfig config;
         try (Reader reader = Files.newBufferedReader(configPath)) {
             JsonReader jsonReader = new JsonReader(reader);
             jsonReader.setLenient(true);
 
-            XXLConfig config = GSON.fromJson(jsonReader, XXLConfig.class);
+            config = GSON.fromJson(jsonReader, XXLConfig.class);
 
             if (config == null) {
                 XXLEnderChest.LOGGER.warn("{} Config file was empty or invalid - using defaults.", XXLEnderChest.getLogPrefix());
@@ -62,10 +68,6 @@ public class XXLConfigManager {
             }
 
             config.validate();
-            save(config);
-            XXLEnderChest.LOGGER.debug("{} Config loaded: {}", XXLEnderChest.getLogPrefix(), config);
-            return config;
-
         } catch (IOException | JsonParseException e) {
             XXLEnderChest.LOGGER.error("{} Failed to read config file - using defaults.", XXLEnderChest.getLogPrefix(), e);
             XXLConfig defaults = new XXLConfig();
@@ -77,6 +79,11 @@ public class XXLConfigManager {
             save(defaults);
             return defaults;
         }
+
+        // Close the reader before replacing the file, including on Windows.
+        save(config);
+        XXLEnderChest.LOGGER.debug("{} Config loaded: {}", XXLEnderChest.getLogPrefix(), config);
+        return config;
     }
 
     /**
@@ -86,16 +93,31 @@ public class XXLConfigManager {
      * @return {@code true} when the config was written successfully
      */
     public boolean save(XXLConfig config) {
+        Path temporaryPath = null;
         try {
-            Files.createDirectories(configPath.getParent());
-            try (Writer writer = Files.newBufferedWriter(configPath)) {
+            // Replace the link's target, never the symbolic link itself.
+            Path destination = Files.isSymbolicLink(configPath)
+                    ? configPath.toRealPath() : configPath.toAbsolutePath();
+            Files.createDirectories(destination.getParent());
+            temporaryPath = Files.createTempFile(destination.getParent(), CONFIG_FILE_NAME, ".tmp");
+            try (Writer writer = Files.newBufferedWriter(temporaryPath)) {
                 writer.write(buildConfigFileContents(config));
             }
+            Files.move(temporaryPath, destination, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
             XXLEnderChest.LOGGER.debug("{} Config saved to {}", XXLEnderChest.getLogPrefix(), configPath);
             return true;
         } catch (IOException e) {
             XXLEnderChest.LOGGER.error("{} Failed to save config file.", XXLEnderChest.getLogPrefix(), e);
             return false;
+        } finally {
+            if (temporaryPath != null) {
+                try {
+                    Files.deleteIfExists(temporaryPath);
+                } catch (IOException e) {
+                    XXLEnderChest.LOGGER.warn("{} Failed to remove temporary config file {}.",
+                            XXLEnderChest.getLogPrefix(), temporaryPath, e);
+                }
+            }
         }
     }
 
