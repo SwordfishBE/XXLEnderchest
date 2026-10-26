@@ -1,0 +1,44 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+neoForge {
+    version = neo_version
+    runs {
+        client { client() }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+    }
+    mods {
+        xxlenderchest {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+sourceSets.main.java.srcDir rootProject.file('core/src/client/java')
+sourceSets.test {
+    compileClasspath += sourceSets.main.compileClasspath
+    runtimeClasspath += sourceSets.main.runtimeClasspath
+}
+
+configurations {
+    localRuntime
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    compileOnly 'net.luckperms:api:5.4'
+    compileOnly "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    localRuntime "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'neo_version', neo_version
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand version: project.version, neo_version: neo_version
+    }
+}

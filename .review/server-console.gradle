@@ -1,0 +1,13 @@
+allprojects {
+    if (providers.gradleProperty('withoutOptionalMods').isPresent()) {
+        configurations.configureEach {
+            if (name.endsWith('RuntimeClasspath') || name == 'runtimeClasspath') {
+                exclude group: 'me.shedaniel.cloth'
+                exclude group: 'com.terraformersmc'
+            }
+        }
+    }
+    tasks.withType(JavaExec).configureEach {
+        standardInput = System.in
+    }
+}
