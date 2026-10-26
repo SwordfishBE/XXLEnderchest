@@ -46,6 +46,14 @@ subprojects {
         from(rootProject.file('LICENSE'))
     }
 }
+def collectReleaseJars = tasks.register('collectReleaseJars', Sync) {
+    group = 'build'
+    description = 'Collects the current Fabric and NeoForge mod jars for release uploads.'
+    from(project(':fabric').tasks.named('jar').flatMap { it.archiveFile })
+    from(project(':neoforge').tasks.named('jar').flatMap { it.archiveFile })
+    into layout.buildDirectory.dir('libs')
+}
+
 tasks.named('build') {
     dependsOn ':fabric:build', ':neoforge:build'
 }
@@ -53,7 +61,7 @@ tasks.named('check') {
     dependsOn ':fabric:check', ':neoforge:check'
 }
 tasks.named('assemble') {
-    dependsOn ':fabric:assemble', ':neoforge:assemble'
+    dependsOn ':fabric:assemble', ':neoforge:assemble', collectReleaseJars
 }
 tasks.named('clean') {
     dependsOn ':fabric:clean', ':neoforge:clean'
